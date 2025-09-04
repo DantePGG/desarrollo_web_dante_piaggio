@@ -1,1 +1,140 @@
-/* nada aun, placeholder
+/* Estilos generales para todo el cuerpo del documento */
+body {
+    font-family: Arial, sans-serif;
+    margin: 40px;
+    background-color: #f4f4f4; /* Gris para el fondo */
+    color: #333; /* Color del texto */
+    line-height: 1.6;
+    display: flex; /* Utiliza Flexbox para centrar el contenido principal */
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Estilo para los títulos principales de la página */
+h1 {
+    color: #4CAF50; /* Un verde para tener contraste con el gris */
+    text-align: center;
+    border-bottom: 2px solid #4CAF50;
+    padding-bottom: 10px;
+    width: 100%;
+    max-width: 800px; /* Ancho max*/
+}
+
+/* Estilos para los encabezados de sección */
+h2 {
+    color: #555;
+    margin-top: 30px;
+}
+
+/* Estilo para el menú de navegación */
+nav ul {
+    list-style-type: none; /* Elimina los puntos de la lista */
+    padding: 0;
+    text-align: center;
+}
+
+nav li {
+    display: inline-block; /* Muestra los elementos en line en vez de en columna */
+    margin: 0 15px;
+}
+
+nav a {
+    text-decoration: none; /* Eliminar el subrayado de los enlaces */
+    color: #007BFF; /* Un azul para los enlaces como hypertext */
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s; /* Transición suave para el hover */
+}
+
+nav a:hover {
+    background-color: #e2e2e2;
+}
+
+/* Estilos para tablas */
+table {
+    width: 100%;
+    max-width: 800px;
+    border-collapse: collapse; /* Combina los bordes de las celdas */
+    margin-top: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombras */
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+}
+
+th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2; /* Color para filas pares */
+}
+
+/* Estilo para las filas de la tabla de listado (como en listado se les puede hacer click) */
+#tablaListado tr {
+    cursor: pointer;
+}
+
+/* Estilos para las imágenes del visor en detalle.html */
+.mini {
+    width: 320px;
+    height: 240px;
+    object-fit: cover; /* Recorta la imagen para que se ajuste al tamaño que dice el enunciado*/
+    cursor: pointer;
+    margin: 5px;
+    border: 2px solid transparent;
+    transition: border 0.3s;
+}
+
+.mini:hover {
+    border: 2px solid #007BFF;
+}
+
+/* Estilos para el visor de imagen grande */
+#visor {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8); /* Fondo oscuro semitransparente */
+    z-index: 1000; /* Asegura que esté por encima de todo */
+}
+
+#imgGrande {
+    max-width: 800px;
+    max-height: 600px;
+    border: 5px solid white;
+    border-radius: 5px;
+    object-fit: contain;
+}
+
+#cerrarVisor {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 1.5em;
+    background: #fff;
+    color: #333;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+#cerrarVisor:hover {
+    background-color: #ccc;
+}
