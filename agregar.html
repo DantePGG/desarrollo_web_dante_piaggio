@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Agregar aviso</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <h1>Agregar aviso de adopción</h1>
+  <form id="formAviso">
+    <fieldset>
+      <legend>¿Dónde?</legend>
+      Región: <select id="region"><option value="">Seleccione...</option></select><br>
+      Comuna: <select id="comuna" disabled><option value="">Seleccione...</option></select><br>
+      Sector: <input type="text" id="sector" maxlength="100">
+    </fieldset>
+
+    <fieldset>
+      <legend>¿Contacto de esta publicación?</legend>
+      Nombre: <input type="text" id="nombre" placeholder="Alexis Sánchez"><br>
+      Email: <input type="email" id="email" placeholder="AlexisSanchez@gmail.com"><br>
+      Celular: <input type="tel" id="celular" placeholder="+569.12345678"><br>
+      <div id="redesContainer">
+        <label for="redes-0">Contactar por:</label>
+        <select id="redes-0" class="redesSelect">
+          <option value="">No contactar por otra red</option>
+          <option value="whatsapp">Whatsapp</option>
+          <option value="telegram">Telegram</option>
+          <option value="X">X</option>
+          <option value="instagram">Instagram</option>
+          <option value="tiktok">Tiktok</option>
+          <option value="otra">Otra</option>
+        </select>
+      <div class="idRedContainer" style="display:none;">
+          <input type="text" class="idRedInput" placeholder="ID o URL" minlength="4" maxlength="50">
+        </div>
+      </div>
+      <button type="button" id="btnAgregarRed">Agregar otra red</button>
+    </fieldset>
+
+    <fieldset>
+      <legend>¿Qué mascota ofrece?</legend>
+      Tipo: <select id="tipo"><option value="">Seleccione...</option><option value="gato">Gato</option><option value="perro">Perro</option></select><br>
+      Cantidad: <input type="number" id="cantidad" min="1" value="1"><br>
+      Edad: <input type="number" id="edad" min="1" value="1"> 
+      <select id="unidad"><option value="meses">Meses</option><option value="años">Años</option></select><br>
+      Fecha disponible para entrega: <input type="datetime-local" id="fechaEntrega"><br>
+      Descripción:<br>
+      <textarea id="descripcion" cols="50" rows="10"></textarea><br>
+      <div id="fotosContainer">
+        Fotos: <input type="file" class="fotoInput" accept="image/*">
+      </div>
+      <button type="button" id="btnAgregarFoto">Agregar otra foto</button>
+    </fieldset>
+
+    <button type="submit">Agregar este aviso de adopción</button>
+  </form>
+
+  <a href="index.html">Volver a portada</a>
+  <script src="js/region_comuna.js" defer></script>
+  <script src="js/agregar.js" defer></script>
+</body>
+</html>
