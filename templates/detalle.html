@@ -3,29 +3,50 @@
 <head>
   <meta charset="UTF-8">
   <title>Adopcion - Detalle de aviso</title>
-  <link rel="stylesheet" href="static/css/style.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
   <h1>Detalle del aviso</h1>
-  <p><b>Publicación:</b> 2025-08-16 10:00</p>
-  <p><b>Entrega:</b> 2025-08-20 15:00</p>
-  <p><b>Comuna:</b> Las Condes</p>
-  <p><b>Sector:</b> Apumanque</p>
-  <p><b>Cantidad:</b> 2</p>
-  <p><b>Tipo:</b> Perros</p>
-  <p><b>Edad:</b> 1 mes</p>
-  <p><b>Contacto:</b> Juan - juan@gmail.com</p>
+  
+  <p><b>Publicación:</b> {{ aviso.fecha_ingreso.strftime('%Y-%m-%d %H:%M') }}</p>
+  <p><b>Entrega:</b> {{ aviso.fecha_entrega.strftime('%Y-%m-%d %H:%M') }}</p>
+  <p><b>Comuna:</b> {{ aviso.comuna.nombre }}</p>
+  <p><b>Sector:</b> {{ aviso.sector }}</p>
+  <p><b>Cantidad:</b> {{ aviso.cantidad }}</p>
+  <p><b>Tipo:</b> {{ aviso.tipo }}</p>
+  <p>
+    <b>Edad:</b> {{ aviso.edad }} 
+    {% if aviso.unidad_medida == 'a' %}años{% else %}meses{% endif %}
+  </p>
+  <p><b>Contacto:</b> {{ aviso.nombre }} - {{ aviso.email }}</p>
+  
+  {% if aviso.celular %}
+  <p><b>Celular:</b> {{ aviso.celular }}</p>
+  {% endif %}
+  
+  <p><b>Otras redes:</b></p>
+  <ul>
+    {% for contacto in aviso.contactos %}
+    <li>{{ contacto.nombre|capitalize }}: {{ contacto.identificador }}</li>
+    {% endfor %}
+  </ul>
+
+  <p><b>Descripción:</b></p>
+  <p>{{ aviso.descripcion }}</p>
+  
   <p><b>Fotos:</b></p>
-  <img src="img/perro2.jpg" class="mini" alt="Foto 1 del aviso">
-  <img src="img/perro3.jpg" class="mini" alt="Foto 2 del aviso">
+  {% for foto in aviso.fotos %}
+  <img src="{{ url_for('static', filename=foto.ruta_archivo) }}" class="mini" alt="Foto {{ loop.index }} del aviso">
+  {% endfor %}
   
   <div id="visor" style="display:none;">
     <img id="imgGrande" src="esto_no_se_ve_nunca.jpg" alt="Foto en tamaño grande">
     <button id="cerrarVisor">X</button>
   </div>
 
-  <br><a href="listado.html">Volver al listado</a>
-  <br><a href="index.html">Volver a portada</a>
-  <script src="static/js/detalle.js" defer></script>
+  <br><a href="{{ url_for('listado') }}" class="btn-volver">Volver al listado</a>
+  <br><a href="{{ url_for('index') }}" class="btn-volver">Volver a portada</a>
+  
+  <script src="{{ url_for('static', filename='js/detalle.js') }}"></script>
 </body>
 </html>

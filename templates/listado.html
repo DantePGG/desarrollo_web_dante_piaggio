@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Adopcion - Listado</title>
-  <link rel="stylesheet" href="static/css/style.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
   <h1>Listado de avisos</h1>
@@ -20,25 +20,59 @@
       </tr>
     </thead>
     <tbody>
-      <tr data-id="1">
-        <td>2025-08-18</td><td>2025-08-20</td><td>Santiago</td><td>Beauchef</td><td>1 Gato 2 años</td><td>Juan</td><td>2</td>
+      {% for aviso in avisos %}
+      <tr data-id="{{ aviso.id }}" class="fila-clickable">
+        <td>{{ aviso.fecha_ingreso.strftime('%Y-%m-%d') }}</td>
+        <td>{{ aviso.fecha_entrega.strftime('%Y-%m-%d') }}</td>
+        <td>{{ aviso.comuna.nombre }}</td>
+        <td>{{ aviso.sector }}</td>
+        <td>
+          {{ aviso.cantidad }} {{ aviso.tipo }} 
+          {{ aviso.edad }} {% if aviso.unidad_medida == 'a' %}años{% else %}meses{% endif %}
+        </td>
+        <td>{{ aviso.nombre }}</td>
+        <td>{{ aviso.fotos|length }}</td>
       </tr>
-      <tr data-id="2">
-        <td>2025-08-17</td><td>2025-08-19</td><td>Ñuñoa</td><td>Plaza</td><td>1 Gato 1 año</td><td>Ana</td><td>3</td>
+      {% else %}
+      <tr>
+        <td colspan="7">No hay avisos de adopción para mostrar.</td>
       </tr>
-      <tr data-id="3">
-        <td>2025-08-17</td><td>2025-08-22</td><td>Santiago</td><td>Parque O'higgins</td><td>1 Gato 8 meses</td><td>Pedro</td><td>1</td>
-      </tr>
-      <tr data-id="4">
-        <td>2025-08-16</td><td>2025-08-18</td><td>Providencia</td><td>Plaza Italia</td><td>1 Perro 1 Año</td><td>María</td><td>4</td>
-      </tr>
-      <tr data-id="5">
-        <td>2025-08-16</td><td>2025-08-20</td><td>Las Condes</td><td>Apumanque</td><td>2 Perros 1 mes</td><td>José</td><td>2</td>
-      </tr>
+      {% endfor %}
     </tbody>
   </table>
-  <br>
-  <a href="index.html">Volver a portada</a>
-  <script src="static/js/listado.js" defer></script>
+
+  <div class="pagination">
+    {% if page > 1 %}
+    <a href="{{ url_for('listado', page=page - 1) }}">Anterior</a>
+    {% else %}
+    <span class="disabled">Anterior</span>
+    {% endif %}
+
+    <span>Página {{ page }} de {{ (total / per_page)|round(0, 'ceil')|int }}</span>
+
+    {% if page * per_page < total %}
+    <a href="{{ url_for('listado', page=page + 1) }}">Siguiente</a>
+    {% else %}
+    <span class="disabled">Siguiente</span>
+    {% endif %}
+  </div>
+
+    <br><a href="{{ url_for('index') }}" class="btn-volver">Volver a portada</a>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+          const filas = document.querySelectorAll('#tablaListado tbody .fila-clickable'); 
+          
+          filas.forEach(fila => {
+            fila.style.cursor = 'pointer'; 
+            
+            fila.addEventListener('click', () => {
+              const avisoId = fila.getAttribute('data-id');
+              // Genera la URL base en Jinja y sustituye el '0' en JavaScript
+              window.location.href = `{{ url_for('detalle', aviso_id=0) }}`.replace('0', avisoId);
+            });
+          });
+        });
+    </script>
 </body>
 </html>

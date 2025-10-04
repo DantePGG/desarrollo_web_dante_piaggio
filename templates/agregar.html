@@ -3,61 +3,105 @@
 <head>
   <meta charset="UTF-8">
   <title>Agregar aviso</title>
-  <link rel="stylesheet" href="static/css/style.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
   <h1>Agregar aviso de adopción</h1>
-  <form id="formAviso">
+  
+  {% if errores %}
+  <div style="color: red; border: 1px solid red; padding: 10px; margin-bottom: 20px;">
+    <strong>¡Atención! Hay errores de validación:</strong>
+    <ul>
+    {% for error in errores %}
+      <li>{{ error }}</li>
+    {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  <form id="formAviso" method="POST" action="{{ url_for('crear_aviso') }}" enctype="multipart/form-data">
     <fieldset>
       <legend>¿Dónde?</legend>
-      Región: <select id="region"><option value="">Seleccione...</option></select><br>
-      Comuna: <select id="comuna" disabled><option value="">Seleccione...</option></select><br>
-      Sector: <input type="text" id="sector" maxlength="100">
+      Región: <select id="region" name="select-region"><option value="">Seleccione...</option></select><br>
+      Comuna: <select id="comuna" name="select-comuna" disabled><option value="">Seleccione...</option></select><br>
+      Sector: 
+      <input type="text" id="sector" name="sector" maxlength="100" 
+             value="{{ datos_form.sector if datos_form else '' }}">
     </fieldset>
 
     <fieldset>
       <legend>¿Contacto de esta publicación?</legend>
-      Nombre: <input type="text" id="nombre" placeholder="Alexis Sánchez"><br>
-      Email: <input type="email" id="email" placeholder="AlexisSanchez@gmail.com"><br>
-      Celular: <input type="tel" id="celular" placeholder="+569.12345678"><br>
+      Nombre: <input type="text" id="nombre" name="nombre" placeholder="Alexis Sánchez" 
+                     value="{{ datos_form.nombre if datos_form else '' }}"><br>
+      Email: <input type="email" id="email" name="email" placeholder="AlexisSanchez@gmail.com" 
+                     value="{{ datos_form.email if datos_form else '' }}"><br>
+      Celular: <input type="tel" id="celular" name="telefono" placeholder="+569.12345678" 
+                      value="{{ datos_form.telefono if datos_form else '' }}"><br>
+                      
       <div id="redesContainer">
-        <label for="redes-0">Contactar por:</label>
-        <select id="redes-0" class="redesSelect">
-          <option value="">No contactar por otra red</option>
-          <option value="whatsapp">Whatsapp</option>
-          <option value="telegram">Telegram</option>
-          <option value="X">X</option>
-          <option value="instagram">Instagram</option>
-          <option value="tiktok">Tiktok</option>
-          <option value="otra">Otra</option>
-        </select>
-      <div class="idRedContainer" style="display:none;">
-          <input type="text" class="idRedInput" placeholder="ID o URL" minlength="4" maxlength="50">
-        </div>
-      </div>
+  <div class="redes-group-item">
+    <label for="redes-0">Contactar por:</label>
+    <select id="redes-0" name="redes-0" class="redesSelect">
+      <option value="">No contactar por otra red</option>
+      <option value="whatsapp" {% if datos_form and 'whatsapp' in datos_form.getlist('redes-0') %}selected{% endif %}>Whatsapp</option>
+      <option value="telegram" {% if datos_form and 'telegram' in datos_form.getlist('redes-0') %}selected{% endif %}>Telegram</option>
+      <option value="X" {% if datos_form and 'X' in datos_form.getlist('redes-0') %}selected{% endif %}>X</option>
+      <option value="instagram" {% if datos_form and 'instagram' in datos_form.getlist('redes-0') %}selected{% endif %}>Instagram</option>
+      <option value="tiktok" {% if datos_form and 'tiktok' in datos_form.getlist('redes-0') %}selected{% endif %}>Tiktok</option>
+      <option value="otra" {% if datos_form and 'otra' in datos_form.getlist('redes-0') %}selected{% endif %}>Otra</option>
+    </select>
+    
+    <div class="idRedContainer" style="display: none;">
+      <input type="text" class="idRedInput" name="idRed-0" placeholder="ID o URL de la red" minlength="4" maxlength="150"
+        value="{{ datos_form.get('idRed-0', '') if datos_form else '' }}">
+    </div>
+    </div>
+</div>
       <button type="button" id="btnAgregarRed">Agregar otra red</button>
     </fieldset>
 
     <fieldset>
       <legend>¿Qué mascota ofrece?</legend>
-      Tipo: <select id="tipo"><option value="">Seleccione...</option><option value="gato">Gato</option><option value="perro">Perro</option></select><br>
-      Cantidad: <input type="number" id="cantidad" min="1" value="1"><br>
-      Edad: <input type="number" id="edad" min="1" value="1"> 
-      <select id="unidad"><option value="meses">Meses</option><option value="años">Años</option></select><br>
-      Fecha disponible para entrega: <input type="datetime-local" id="fechaEntrega"><br>
+      Tipo: 
+      <select id="tipo" name="tipo">
+        <option value="">Seleccione...</option>
+        <option value="Gato" {% if datos_form and datos_form.tipo == 'Gato' %}selected{% endif %}>Gato</option>
+        <option value="Perro" {% if datos_form and datos_form.tipo == 'Perro' %}selected{% endif %}>Perro</option>
+      </select><br>
+      
+      Cantidad: 
+      <input type="number" id="cantidad" name="cantidad" min="1" 
+             value="{{ datos_form.cantidad if datos_form and datos_form.cantidad else 1 }}"><br>
+             
+      Edad: 
+      <input type="number" id="edad" name="edad" min="1" 
+             value="{{ datos_form.edad if datos_form and datos_form.edad else 1 }}"> 
+             
+      <select id="unidad" name="unidadEdad">
+        <option value="m" {% if datos_form and datos_form.unidadEdad == 'm' %}selected{% endif %}>Meses</option>
+        <option value="a" {% if datos_form and datos_form.unidadEdad == 'a' %}selected{% endif %}>Años</option>
+      </select><br>
+      
+      Fecha disponible para entrega: 
+      <input type="datetime-local" id="fechaEntrega" name="fechaEntrega" 
+             value="{{ datos_form.fechaEntrega if datos_form else '' }}"><br>
+             
       Descripción:<br>
-      <textarea id="descripcion" cols="50" rows="10"></textarea><br>
+      <textarea id="descripcion" name="descripcion" cols="50" rows="10">{{ datos_form.descripcion if datos_form else '' }}</textarea><br>
+      
       <div id="fotosContainer">
-        Fotos: <input type="file" class="fotoInput" accept="image/*">
+        Fotos: <input type="file" class="fotoInput" name="foto[]" accept="image/*">
       </div>
       <button type="button" id="btnAgregarFoto">Agregar otra foto</button>
     </fieldset>
 
-    <button type="submit">Agregar este aviso de adopción</button>
-  </form>
+    <input type="submit" value="Agregar este aviso de adopción">
+    <input type="reset" value="Limpiar formulario">
+    <br><a href="{{ url_for('index') }}" class="btn-volver">Volver a portada</a>
 
-  <a href="index.html">Volver a portada</a>
-  <script src="static/js/region_comuna.js" defer></script>
-  <script src="static/js/agregar.js" defer></script>
+  </form>
+  
+  <script src="{{ url_for('static', filename='js/region_comuna.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/agregar.js') }}"></script>
 </body>
 </html>

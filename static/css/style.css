@@ -213,3 +213,123 @@ button:hover {
     display: block;
     margin: 20px auto;
 }
+
+/* Estilos para Botones del Formulario (agregar.html) */
+
+/* Estilo general para todos los botones de accion */
+input[type="submit"], 
+input[type="reset"], 
+button {
+    /* se supone que display: inline-block permite ancho y alto pero mantiene el flujo de texto, probar */
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 10px 5px 10px 0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+/* Estilo para el boton principal (Enviar/Submit) */
+input[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+}
+
+input[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+/* Estilo para el boton de Limpiar/Reset */
+input[type="reset"] {
+    background-color: #f44336;
+    color: white;
+}
+
+input[type="reset"]:hover {
+    background-color: #d32f2f;
+}
+
+/* Estilo para los botones de agregar dinámicos (Agregar foto, Agregar red) */
+button {
+    background-color: #008CBA;
+    color: white;
+}
+
+button:hover {
+    background-color: #005f7d;
+}
+
+
+/* Estilos para Tablas y Filas Cliqueables (index.html, listado.html)*/
+
+/* Estilo para resaltar que una fila es interactiva */
+.fila-clickable {
+    cursor: pointer;
+}
+
+.fila-clickable:hover {
+    /* Trate de elejir un fondo piola al pasar el mouse */
+    background-color: #e0e0e0;
+}
+
+
+/*Estilos para Paginacion (listado.html)*/
+
+.pagination {
+    margin-top: 20px;
+    padding: 10px;
+    text-align: center;
+    border-top: 1px solid #ccc; 
+}
+
+.pagination a, .pagination span {
+    display: inline-block;
+    padding: 8px 16px;
+    text-decoration: none;
+    color: #4CAF50;
+    border: 1px solid #4CAF50;
+    margin: 0 4px;
+    border-radius: 4px;
+}
+
+.pagination a:hover {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.pagination span {
+    /* Estilo para el texto de la página actual */
+    color: #555; 
+    border: none;
+    font-weight: bold;
+}
+
+.pagination span.disabled {
+    /* Estilo para los enlaces deshabilitados (Anterior en Pag 1, Siguiente en Ultima Pag) */
+    color: #aaa;
+    border: 1px solid #aaa;
+    cursor: default;
+    background-color: #f9f9f9;
+}
+
+/*Estilo para el enlace "Volver a..."*/
+.btn-volver {
+    display: inline-block;
+    padding: 8px 15px;
+    margin-top: 20px;
+    margin-bottom: 10px; /* Separación del contenido inferior */
+    background-color: #555; /* Color gris oscuro */
+    color: white;
+    text-decoration: none; /* Elimina el subrayado */
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.btn-volver:hover {
+    background-color: #333; /* Oscurece al pasar el ratón */
+}
