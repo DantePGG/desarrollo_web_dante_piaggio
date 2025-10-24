@@ -1,6 +1,7 @@
 from datetime import datetime
 from flask import Flask, request, render_template, url_for, redirect, jsonify
 from sqlalchemy.orm import joinedload
+from sqlalchemy import func, extract
 from werkzeug.utils import secure_filename
 import os
 import re
@@ -63,6 +64,7 @@ def detalle(aviso_id):
                 joinedload(db.AvisoAdopcion.comuna).joinedload(db.Comuna.region),
                 joinedload(db.AvisoAdopcion.fotos),
                 joinedload(db.AvisoAdopcion.contactos)
+                # aqui estarian los comentarios pero no lo hacemos asi
             )
             .filter_by(id=aviso_id)
             .first()
@@ -296,6 +298,163 @@ def api_regiones():
         return jsonify(data)
     finally:
         session.close()
+
+# agregar rutas para la tarea3
+
+@app.route("/api/stats")
+def api_stats():
+    # la api de sacar los datos para stats
+    session = db.SessionLocal()
+    try:
+        # Primero el grafico de lineas (avisos por dia)
+        # Agrupamos por fecha (ignorando la hora)
+        avisos_por_dia = (
+            session.query(
+                func.date(db.AvisoAdopcion.fecha_ingreso).label("fecha"),
+                func.count(db.AvisoAdopcion.id).label("cantidad"),
+            )
+            .group_by(func.date(db.AvisoAdopcion.fecha_ingreso))
+            .order_by(func.date(db.AvisoAdopcion.fecha_ingreso))
+            .all()
+        )
+        # Formatear para el grafico
+        data_linea = [
+            {"fecha": r.fecha.isoformat(), "cantidad": r.cantidad}
+            for r in avisos_por_dia
+        ]
+
+        # Segundo grafico el de totra, total por tipo (perro/gato)
+        avisos_por_tipo = (
+            session.query(
+                db.AvisoAdopcion.tipo,
+                func.count(db.AvisoAdopcion.id).label("total"),
+            )
+            .group_by(db.AvisoAdopcion.tipo)
+            .all()
+        )
+        data_torta = [{"tipo": r.tipo, "total": r.total} for r in avisos_por_tipo]
+
+        # Ultimo grafico, grafico de barras: perros vs gatos por mes 
+        avisos_por_mes_tipo = (
+            session.query(
+                func.strftime("%Y-%m", db.AvisoAdopcion.fecha_ingreso).label("mes"),
+                db.AvisoAdopcion.tipo,
+                func.count(db.AvisoAdopcion.id).label("cantidad"),
+            )
+            .group_by("mes", db.AvisoAdopcion.tipo)
+            .order_by("mes")
+            .all()
+        )
+        
+        # Re-estructurar datos para el grafico de barras
+        data_barras_dict = {}
+        for r in avisos_por_mes_tipo:
+            if r.mes not in data_barras_dict:
+                data_barras_dict[r.mes] = {"mes": r.mes, "perros": 0, "gatos": 0}
+            
+            if r.tipo == "perro":
+                data_barras_dict[r.mes]["perros"] = r.cantidad
+            elif r.tipo == "gato":
+                data_barras_dict[r.mes]["gatos"] = r.cantidad
+        
+        data_barras = list(data_barras_dict.values())
+
+        return jsonify({
+            "linea": data_linea,
+            "torta": data_torta,
+            "barras": data_barras
+        })
+
+    except Exception as e:
+        print(f"Error en api_stats: {e}")
+        return jsonify({"error": "Error al procesar estadisticas"}), 500
+    finally:
+        session.close()
+
+
+@app.route("/api/avisos/<int:aviso_id>/comentarios", methods=["GET"])
+def get_comentarios(aviso_id):
+    # sacar los comentarios de un aviso
+    session = db.SessionLocal()
+    try:
+        # El order_by ya esta definido en la relacion en db.py
+        aviso = session.query(db.AvisoAdopcion).options(joinedload(db.AvisoAdopcion.comentarios)).filter_by(id=aviso_id).first()
+        if not aviso:
+            return jsonify({"error": "Aviso no encontrado"}), 404
+        
+        comentarios_data = [
+            {
+                "id": c.id,
+                "nombre": c.nombre,
+                "texto": c.texto,
+                "fecha": c.fecha.isoformat() 
+            }
+            for c in aviso.comentarios
+        ]
+        return jsonify(comentarios_data)
+    finally:
+        session.close()
+
+@app.route("/api/avisos/<int:aviso_id>/comentarios", methods=["POST"])
+def add_comentario(aviso_id):
+    #get para agregar un comentario
+    session = db.SessionLocal()
+    try:
+        aviso = session.query(db.AvisoAdopcion).filter_by(id=aviso_id).first()
+        if not aviso:
+            return jsonify({"success": False, "errors": ["Aviso no encontrado"]}), 404
+
+        data = request.json
+        nombre = data.get("nombre", "").strip()
+        texto = data.get("texto", "").strip()
+
+        # Validacion del lado del servidor 
+        errores = []
+        if not (3 <= len(nombre) <= 80):
+            errores.append("El nombre debe tener entre 3 y 80 caracteres.")
+        if not (len(texto) >= 5): 
+            errores.append("El comentario debe tener al menos 5 caracteres.")
+        if len(texto) > 300:
+            errores.append("El comentario no puede exceder los 300 caracteres.")
+
+        if errores:
+            # Informar al usuario manteniendo el formulario (lado cliente) 
+            return jsonify({"success": False, "errors": errores}), 400
+
+        # Insertar en la base de datos 
+        nuevo_comentario = db.Comentario(
+            nombre=nombre,
+            texto=texto,
+            aviso_id=aviso_id,
+            fecha=datetime.now()
+        )
+        session.add(nuevo_comentario)
+        session.commit()
+        
+        # Refrescar para obtener la fecha generada por la DB
+        session.refresh(nuevo_comentario) 
+
+        # Devolver el comentario creado para agregarlo dinamicamente
+        return jsonify({
+            "success": True,
+            "comentario": {
+                "id": nuevo_comentario.id,
+                "nombre": nuevo_comentario.nombre,
+                "texto": nuevo_comentario.texto,
+                "fecha": nuevo_comentario.fecha.isoformat()
+            }
+        }), 201 # 201 = Created
+
+    except Exception as e:
+        session.rollback()
+        print(f"Error en add_comentario: {e}")
+        return jsonify({"success": False, "errors": ["Error interno del servidor"]}), 500
+    finally:
+        session.close()
+
+
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)
