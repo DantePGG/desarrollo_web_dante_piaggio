@@ -60,6 +60,8 @@ class AvisoAdopcion(Base):
     comuna = relationship("Comuna", back_populates="avisos")
     fotos = relationship("Foto", back_populates="aviso", cascade="all, delete-orphan")
     contactos = relationship("ContactarPor", back_populates="aviso", cascade="all, delete-orphan")
+    # ahora la parte de comentarios de la t3
+    comentarios = relationship("Comentario", back_populates="aviso", cascade="all, delete-orphan", order_by="Comentario.fecha.desc()") 
     
     @property
     def edad_txt(self):
@@ -68,6 +70,7 @@ class AvisoAdopcion(Base):
         elif self.unidad_medida == "m":
             return f"{self.edad} meses"
         return str(self.edad)
+    
 
 class Foto(Base):
     __tablename__ = "foto"
@@ -85,3 +88,14 @@ class ContactarPor(Base):
     identificador = Column(String(150), nullable=False)
     actividad_id = Column(Integer, ForeignKey("aviso_adopcion.id"), nullable=False)
     aviso = relationship("AvisoAdopcion", back_populates="contactos")
+
+
+# y la tabla nueva de la t3
+class Comentario(Base):
+    __tablename__ = "comentario"
+    id = Column(Integer, primary_key=True)
+    nombre = Column(String(80), nullable=False)
+    texto = Column(String(300), nullable=False) 
+    fecha = Column(DateTime, nullable=False, default=datetime.now)
+    aviso_id = Column(Integer, ForeignKey("aviso_adopcion.id"), nullable=False)
+    aviso = relationship("AvisoAdopcion", back_populates="comentarios")
