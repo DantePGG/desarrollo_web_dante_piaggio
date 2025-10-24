@@ -333,3 +333,61 @@ button:hover {
 .btn-volver:hover {
     background-color: #333; /* Oscurece al pasar el ratón */
 }
+
+/* CSS para los comentarios de la parte 3*/
+
+/* Estilo para el contenedor de errores */
+#errores-comentario {
+    color: #d32f2f; /* Un rojo más oscuro */
+    margin-top: 10px;
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+#lista-comentarios {
+    margin-top: 30px; /* Separación entre el formulario y la lista */
+    width: 100%;
+    max-width: 600px; /* Mismo ancho que el formulario */
+}
+
+.comentario-item {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Sombra sutil */
+}
+
+.comentario-header {
+    font-weight: bold;
+    color: #555; /* Color de encabezado secundario */
+    font-size: 0.9em;
+    border-bottom: 1px solid #eee; /* Línea divisoria sutil */
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+}
+
+.comentario-texto {
+    font-size: 1em;
+    line-height: 1.5;
+    word-wrap: break-word; /* Asegura que el texto no se salga del contenedor */
+}
+
+
+#btn-agregar-comentario {
+    background-color: #4CAF50; /* Verde (Submit) */
+    color: white;
+}
+
+#btn-agregar-comentario:hover {
+    background-color: #45a049;
+}
+
+
+/* Estilo para el nombre dentro del comentario */
+.comentario-item .comentario-nombre {
+    color: #1976D2; /* Azul medio de Material Design */
+    font-weight: bold; 
+    font-style: italic; 
+}

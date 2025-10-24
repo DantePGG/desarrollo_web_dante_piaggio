@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return response.json();
         })
         .then(data => {
-            // Renderizar los 3 graficos [cite: 8]
+            // Renderizar los 3 graficos
             renderGraficoLinea(data.linea);
             renderGraficoTorta(data.torta);
             renderGraficoBarras(data.barras);
@@ -21,9 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 });
 
-/**
- * Grafico 1: Lineas (Avisos por dia) [cite: 9]
- */
+// Grafico 1, de lineas
+
 function renderGraficoLinea(data) {
     Highcharts.chart('chart-container-linea', {
         chart: {
@@ -33,14 +32,14 @@ function renderGraficoLinea(data) {
             text: 'Avisos de adopción por día'
         },
         xAxis: {
-            categories: data.map(d => d.fecha), // Eje X: Dias [cite: 10]
+            categories: data.map(d => d.fecha), // Eje X: Dias 
             title: {
                 text: 'Fecha'
             }
         },
         yAxis: {
             title: {
-                text: 'Cantidad de Avisos' // Eje Y: Cantidad [cite: 10]
+                text: 'Cantidad de Avisos' // Eje Y: Cantidad 
             }
         },
         series: [{
@@ -51,9 +50,8 @@ function renderGraficoLinea(data) {
     });
 }
 
-/**
- * Grafico 2: Torta (Avisos por tipo) [cite: 11]
- */
+// Grafico 2, de torta
+
 function renderGraficoTorta(data) {
     // Formatear datos para Highcharts (ej: { name: 'Perro', y: 5 })
     const formattedData = data.map(d => ({
@@ -90,9 +88,8 @@ function renderGraficoTorta(data) {
     });
 }
 
-/**
- * Grafico 3: Barras (Avisos por mes, Perro vs Gato) [cite: 12]
- */
+// Grafico 3, de barras
+
 function renderGraficoBarras(data) {
     Highcharts.chart('chart-container-barras', {
         chart: {
@@ -102,7 +99,7 @@ function renderGraficoBarras(data) {
             text: 'Avisos de Gatos vs. Perros por Mes'
         },
         xAxis: {
-            categories: data.map(d => d.mes), // Eje X: Meses [cite: 12]
+            categories: data.map(d => d.mes), // Eje X: Meses
             title: {
                 text: 'Mes'
             }
@@ -110,7 +107,7 @@ function renderGraficoBarras(data) {
         yAxis: {
             min: 0,
             title: {
-                text: 'Cantidad de Avisos' // Eje Y: Cantidad [cite: 13]
+                text: 'Cantidad de Avisos' // Eje Y: Cantidad 
             }
         },
         tooltip: {
@@ -124,11 +121,11 @@ function renderGraficoBarras(data) {
             }
         },
         series: [{
-            name: 'Gatos', // Barra para Gatos [cite: 12]
+            name: 'Gatos', // Barra para Gatos 
             data: data.map(d => d.gatos),
             color: '#FFA500' // Naranja
         }, {
-            name: 'Perros', // Barra para Perros [cite: 12]
+            name: 'Perros', // Barra para Perros 
             data: data.map(d => d.perros),
             color: '#4682B4' // Azul
         }],

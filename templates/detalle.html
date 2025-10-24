@@ -5,7 +5,7 @@
   <title>Adopcion - Detalle de aviso</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-<body>
+<body data-aviso-id="{{ aviso.id }}">
   <h1>Detalle del aviso</h1>
   
   <p><b>Publicación:</b> {{ aviso.fecha_ingreso.strftime('%Y-%m-%d %H:%M') }}</p>
@@ -44,6 +44,31 @@
     <button id="cerrarVisor">X</button>
   </div>
 
+  <!-- Parte 3 añadiendo los comentarios, tengo q ver el css despues -->
+  
+  <hr>
+  <h2>Comentarios</h2>
+  
+  <fieldset>
+    <legend>Agregar un comentario</legend>
+    <form id="form-comentario">
+      <div>
+        <label for="comentario-nombre">Nombre:</label><br>
+        <input type="text" id="comentario-nombre" name="nombre" 
+               required minlength="3" maxlength="80"> </div>
+      <div>
+        <label for="comentario-texto">Comentario:</label><br>
+        <textarea id="comentario-texto" name="texto" 
+                  rows="4" cols="50" 
+                  required minlength="5" maxlength="300"></textarea> </div>
+      
+      <div id="errores-comentario"></div> 
+      
+      <button type="submit" id="btn-agregar-comentario">Agregar comentario</button> </form>
+  </fieldset>
+  
+  <div id="lista-comentarios">
+    </div>
   <br><a href="{{ url_for('listado') }}" class="btn-volver">Volver al listado</a>
   <br><a href="{{ url_for('index') }}" class="btn-volver">Volver a portada</a>
   
