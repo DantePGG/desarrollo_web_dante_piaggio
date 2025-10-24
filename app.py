@@ -337,7 +337,7 @@ def api_stats():
         # Ultimo grafico, grafico de barras: perros vs gatos por mes 
         avisos_por_mes_tipo = (
             session.query(
-                func.strftime("%Y-%m", db.AvisoAdopcion.fecha_ingreso).label("mes"),
+                func.date_format(db.AvisoAdopcion.fecha_ingreso, "%Y-%m").label("mes"),
                 db.AvisoAdopcion.tipo,
                 func.count(db.AvisoAdopcion.id).label("cantidad"),
             )
