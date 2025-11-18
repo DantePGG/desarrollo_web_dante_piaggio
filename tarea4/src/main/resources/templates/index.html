@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>CC5002 - Tarea 4 - Evaluación de Avisos</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <h1>Listado de Avisos de Adopción</h1>
+    <p>Implementación de la Tarea 4 usando Spring Boot (Java) y JPA.</p>
+
+    <table id="tablaListado">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Fecha Publicación</th>
+                <th>Sector</th>
+                <th>Cantidad Tipo Edad</th>
+                <th>Comuna</th>
+                <th>Nota</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="aviso : ${avisos}" th:data-id="${aviso.id}">
+                <td th:text="${aviso.id}">1</td>
+                <td th:text="${#temporals.format(aviso.fechaIngreso, 'yyyy-MM-dd')}">2025-06-02</td>
+                <td th:text="${aviso.sector}">Beauchef</td>
+                <td th:text="${aviso.cantidadTipoEdad}">1 gato 2 meses</td>
+                <td th:text="${aviso.comunaNombre}">Santiago</td>
+                <td class="nota-promedio" th:id="'nota-' + ${aviso.id}">
+                    <span th:if="${aviso.promedioNota != null}" th:text="${#numbers.formatDecimal(aviso.promedioNota, 1, 1)}">5.5</span>
+                    <span th:if="${aviso.promedioNota == null}">-</span>
+                </td>
+                <td>
+                    <button class="btn-evaluar" th:data-aviso-id="${aviso.id}">Evaluar</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <script th:src="@{/js/listado.js}"></script>
+</body>
+</html>
